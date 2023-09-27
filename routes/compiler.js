@@ -14,6 +14,7 @@ compilerRouter.post('/', function(req, res, next) {
   // Call the Compile function
   try{
   const transformedCode = secureCodeTransformer(text);
+  console.log({transformedCode})
     res.json({data:  transformedCode})
   }
   catch (e) {
@@ -24,11 +25,8 @@ compilerRouter.post('/', function(req, res, next) {
 
 
 compilerRouter.get('/', function(req, res, next) {
-  const code = `
-  this
+  const code = `print(hello world)`;
 
-
-`;
   const transformedCode = secureCodeTransformer(code);
   const formattedCode = `<pre>${transformedCode}</pre>`; // Wrap transformedCode in <pre> tag
     res.send(formattedCode);
