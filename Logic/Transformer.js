@@ -1,9 +1,11 @@
 const j = require('jscodeshift');
 const allowedNodes = require('../AST_ALLOWED');
+const browserSpecific = require('../BROWSER_SPECIFIC');
 
 function secureCodeTransformer(root) {
     noThisStatementInFirstLevel(root);
     onlyAllowedNodes(root.find(j.Program).nodes()[0]);
+    BrowserSpecific(root)
     asyncprogram(root)
     l = leadingcomLoops(root, root.find(j.Program).nodes()[0]);
     root = l.rt
@@ -12,6 +14,32 @@ function secureCodeTransformer(root) {
 
 module.exports = (code) => secureCodeTransformer(j(code));
 
+function BrowserSpecific  (root){
+    const DECLARED_LIST = new Set();
+    root.find(j.VariableDeclaration).forEach(path => {
+        path.node.declarations.forEach(declaration => {
+            DECLARED_LIST.add(declaration.id.name);
+        });
+    });
+
+    root.find(j.FunctionDeclaration).forEach(path => {
+        DECLARED_LIST.add(path.node.id.name);
+    });
+
+    // Step 2: Find and collect undeclared variables/constants/functions
+    const UNDECLARED = new Set();
+
+    root.find(j.Identifier).forEach(path => {
+        const name = path.node.name;
+        if (!DECLARED_LIST.has(name)) {
+            UNDECLARED.add(name);
+        }
+    });
+    Array.from(UNDECLARED).map(e=> {
+        if (browserSpecific.includes(e)) throw new ReferenceError("Unexpected use of "+String (e))
+    })
+    return root
+}
 function asyncprogram (root){
     root.find(j.Program).forEach(path=> {
         const asyncarrow = j.arrowFunctionExpression([], j.blockStatement(path.value.body))

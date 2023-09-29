@@ -26,7 +26,7 @@ compilerRouter.post('/', function(req, res, next) {
 
 
 compilerRouter.get('/', function(req, res, next) {
-  const code = `print("hello world")`;
+  const code = `fetch("hello world")`;
 
   const transformedCode = secureCodeTransformer(code);
   const strict_transformedCode = "'use strict';\r\n" +transformedCode
