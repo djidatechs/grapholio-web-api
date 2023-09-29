@@ -14,8 +14,9 @@ compilerRouter.post('/', function(req, res, next) {
   // Call the Compile function
   try{
   const transformedCode = secureCodeTransformer(text);
-  console.log({transformedCode})
-    res.json({data:  transformedCode})
+    const strict_transformedCode = "'use strict';\r\n" +transformedCode
+  console.log({strict_transformedCode})
+    res.json({data:  strict_transformedCode})
   }
   catch (e) {
     res.json({error:  e.toString()})
@@ -25,10 +26,11 @@ compilerRouter.post('/', function(req, res, next) {
 
 
 compilerRouter.get('/', function(req, res, next) {
-  const code = `print(hello world)`;
+  const code = `print("hello world")`;
 
   const transformedCode = secureCodeTransformer(code);
-  const formattedCode = `<pre>${transformedCode}</pre>`; // Wrap transformedCode in <pre> tag
+  const strict_transformedCode = "'use strict';\r\n" +transformedCode
+  const formattedCode = `<pre>${strict_transformedCode}</pre>`; // Wrap transformedCode in <pre> tag
     res.send(formattedCode);
 });
 
