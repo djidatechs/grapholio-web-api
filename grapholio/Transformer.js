@@ -1,6 +1,6 @@
 const j = require('jscodeshift');
-const allowedNodes = require('../AST_ALLOWED');
-const browserSpecific = require('../BROWSER_SPECIFIC');
+const allowedNodes = require('./AST_ALLOWED');
+const browserSpecific = require('./BROWSER_SPECIFIC');
 
 function secureCodeTransformer(root) {
     noThisStatementInFirstLevel(root);

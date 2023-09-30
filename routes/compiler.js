@@ -1,5 +1,5 @@
 var express = require('express');
-const secureCodeTransformer = require("../Logic/Transformer");
+const secureCodeTransformer = require("../grapholio/Transformer");
 var compilerRouter = express.Router();
 
 compilerRouter.post('/', function(req, res, next) {
@@ -24,7 +24,7 @@ compilerRouter.post('/', function(req, res, next) {
 
 });
 
-
+/*
 compilerRouter.get('/', function(req, res, next) {
   const code = `fetch("hello world")`;
 
@@ -33,5 +33,5 @@ compilerRouter.get('/', function(req, res, next) {
   const formattedCode = `<pre>${strict_transformedCode}</pre>`; // Wrap transformedCode in <pre> tag
     res.send(formattedCode);
 });
-
+*/
 module.exports = compilerRouter;
