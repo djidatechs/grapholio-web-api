@@ -8,7 +8,7 @@ var CompilerRouter = require('./routes/compiler');
 
 var app = express();
 app.use(cors({
-    origins: ['https://grapholio.djidax.com/application',"https://grapholio-web.netlify.app/application"]
+    origins: ['https://grapholio-web.vercel.app', "https://grapholio-web.vercel.app/application", 'https://grapholio.djidax.com/application', "https://grapholio-web.netlify.app/application"]
 }));
 
 app.use(logger('dev'));
