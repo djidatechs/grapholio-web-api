@@ -4,7 +4,7 @@ const browserSpecific = require('./BROWSER_SPECIFIC');
 
 function secureCodeTransformer(root) {
     noThisStatementInFirstLevel(root);
-    onlyAllowedNodes(root.find(j.Program).nodes()[0]);
+    // onlyAllowedNodes(root.find(j.Program).nodes()[0]);
     BrowserSpecific(root)
     asyncprogram(root)
     l = leadingcomLoops(root, root.find(j.Program).nodes()[0]);
