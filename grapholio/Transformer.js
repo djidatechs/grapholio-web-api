@@ -14,7 +14,7 @@ function secureCodeTransformer(root) {
 
 module.exports = (code) => secureCodeTransformer(j(code));
 
-function BrowserSpecific  (root){
+function BrowserSpecific(root) {
     const DECLARED_LIST = new Set();
     root.find(j.VariableDeclaration).forEach(path => {
         path.node.declarations.forEach(declaration => {
@@ -35,23 +35,23 @@ function BrowserSpecific  (root){
             UNDECLARED.add(name);
         }
     });
-    Array.from(UNDECLARED).map(e=> {
-        if (browserSpecific.includes(e)) throw new ReferenceError("Unexpected use of "+String (e))
+    Array.from(UNDECLARED).map(e => {
+        if (browserSpecific.includes(e)) throw new ReferenceError("Unexpected use of " + String(e))
     })
     return root
 }
-function asyncprogram (root){
-    root.find(j.Program).forEach(path=> {
+function asyncprogram(root) {
+    root.find(j.Program).forEach(path => {
         const asyncarrow = j.arrowFunctionExpression([], j.blockStatement(path.value.body))
-        asyncarrow.async = true ;
+        asyncarrow.async = true;
         const asyncIIFE = j.callExpression(asyncarrow, []);
-        path.value.body = [j.expressionStatement(asyncIIFE) ]
+        path.value.body = [j.expressionStatement(asyncIIFE)]
 
     })
 }
 function onlyAllowedNodes(node) {
     // Process the current node
-    if (node.type && !allowedNodes.includes(node.type)) {
+    if (node.type && true) {
         throw new SyntaxError(`SyntaxError : Unexpected ${node.type}`);
     }
     // Recursively visit child nodes
@@ -82,7 +82,7 @@ function isProblematicContext(path) {
     return true;
 }
 
-function optimiseLoops(root,path) {
+function optimiseLoops(root, path) {
     addAwaitPromiseToBody(path)
 
     /*const asyncarrow = j.arrowFunctionExpression([], j.blockStatement(path.value.body.body))
@@ -95,7 +95,7 @@ function optimiseLoops(root,path) {
     return root
 }
 
-function leadingcomLoops(root, node, visitedNodes = new Set() , optimisednodes = [0] ) {
+function leadingcomLoops(root, node, visitedNodes = new Set(), optimisednodes = [0]) {
     if (visitedNodes.has(node)) {
         return root; // Already visited this node, prevent infinite loop
     }
@@ -108,14 +108,14 @@ function leadingcomLoops(root, node, visitedNodes = new Set() , optimisednodes =
         }).forEach(path => {
             optimiseLoops(root, path);
             root.find(j.FunctionDeclaration)
-                .filter(Fpath=>{
+                .filter(Fpath => {
                     return isNodeInSubtree(path, Fpath)
                 })
-                .forEach(Fpath=>{
-                    Fpath.value.async = true ;
+                .forEach(Fpath => {
+                    Fpath.value.async = true;
                     root.find(j.CallExpression)
-                        .filter(path=>path.value.callee.name === Fpath.value.id.name )
-                        .forEach(path=>{
+                        .filter(path => path.value.callee.name === Fpath.value.id.name)
+                        .forEach(path => {
                             let Expression = j.awaitExpression(path.node);
                             //Expression = j.expressionStatement(Expression)
                             j(path).replaceWith(Expression);
@@ -130,15 +130,15 @@ function leadingcomLoops(root, node, visitedNodes = new Set() , optimisednodes =
     for (const key in node) {
         if (node[key] && typeof node[key] === 'object' && key !== 'loc' && key !== 'range') {
             if (Array.isArray(node[key])) {
-                node[key].forEach(child => leadingcomLoops(root, child, visitedNodes,optimisednodes));
+                node[key].forEach(child => leadingcomLoops(root, child, visitedNodes, optimisednodes));
             } else {
-                leadingcomLoops(root, node[key], visitedNodes,optimisednodes);
+                leadingcomLoops(root, node[key], visitedNodes, optimisednodes);
             }
         }
     }
 
     return {
-        rt : root,
+        rt: root,
         optimisednodes
     };
 }
@@ -157,9 +157,9 @@ function addAwaitPromiseToBody(path) {
     );
 
     if (loopBody.value?.body?.length > 0)
-        j(loopBody).replaceWith(j.blockStatement([awaitPromise,...loopBody.value.body]));
+        j(loopBody).replaceWith(j.blockStatement([awaitPromise, ...loopBody.value.body]));
     else
-        j(loopBody).replaceWith(j.blockStatement([awaitPromise,loopBody.value]));
+        j(loopBody).replaceWith(j.blockStatement([awaitPromise, loopBody.value]));
 
     return path
 }
@@ -174,7 +174,7 @@ function containsOptimiseSubstring(arr) {
     return false;
 }
 
-function callbackfunctions (path){
+function callbackfunctions(path) {
     let ret = []
     path.find(j.ArrowFunctionExpression).forEach(path => {
         // Check if this function is used as a callback
@@ -242,7 +242,7 @@ function isNodeInSubtree(nodeX, nodeY) {
             return true;
         }
 
-        if (  node && typeof node === 'object') {
+        if (node && typeof node === 'object') {
             for (let key in node) {
                 if (node[key] && key !== 'loc' && key !== 'range') {
                     if (isDescendant(node[key], target)) {
